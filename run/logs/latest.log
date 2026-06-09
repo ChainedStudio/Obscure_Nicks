@@ -1,0 +1,98 @@
+[17:21:59] [ServerMain/INFO]: [bootstrap] Running Java 21 (OpenJDK 64-Bit Server VM 21.0.11+10-LTS; Eclipse Adoptium Temurin-21.0.11+10) on Linux 6.19.11-ogc1.1.fc44.x86_64 (amd64)
+[17:21:59] [ServerMain/INFO]: [bootstrap] Loading Paper 1.21.11-132-ver/1.21.11@c5eb079 (2026-05-11T11:43:09Z) for Minecraft 1.21.11
+[17:22:00] [ServerMain/INFO]: [PluginInitializerManager] Initializing plugins...
+[17:22:00] [Paper Plugin Remapper Thread - 2/INFO]: [PluginRemapper] Remapping plugin '/var/home/vastly/IdeaProjects/ObscureNicks/build/libs/ObscureNicks-1.0-SNAPSHOT.jar'...
+[17:22:01] [Paper Plugin Remapper Thread - 2/INFO]: [PluginRemapper] Done remapping plugin '/var/home/vastly/IdeaProjects/ObscureNicks/build/libs/ObscureNicks-1.0-SNAPSHOT.jar' in 391ms.
+[17:22:01] [ServerMain/INFO]: [PluginInitializerManager] Initialized 2 plugins
+[17:22:01] [ServerMain/INFO]: [PluginInitializerManager] Bukkit plugins (2):
+ - ObscureNicks (1.0.0), PlaceholderAPI (2.12.2)
+[17:22:05] [ServerMain/INFO]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, profilesHost=https://api.mojang.com, name=PROD]
+[17:22:07] [ServerMain/INFO]: Loaded 1470 recipes
+[17:22:07] [ServerMain/INFO]: Loaded 1584 advancements
+[17:22:07] [ServerMain/INFO]: [ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry] Initialising converters for DataConverter...
+[17:22:08] [ServerMain/INFO]: [ca.spottedleaf.dataconverter.minecraft.datatypes.MCTypeRegistry] Finished initialising converters for DataConverter in 395.9ms
+[17:22:08] [Server thread/INFO]: Starting minecraft server version 1.21.11
+[17:22:08] [Server thread/INFO]: Loading properties
+[17:22:08] [Server thread/INFO]: This server is running Paper version 1.21.11-132-ver/1.21.11@c5eb079 (2026-05-11T11:43:09Z) (Implementing API version 1.21.11-R0.1-SNAPSHOT)
+[17:22:08] [Server thread/INFO]: [spark] This server bundles the spark profiler. For more information please visit https://docs.papermc.io/paper/profiling
+[17:22:08] [Server thread/INFO]: Server Ping Player Sample Count: 12
+[17:22:08] [Server thread/INFO]: Using 4 threads for Netty based IO
+[17:22:09] [Server thread/INFO]: [MoonriseCommon] Paper is using 2 worker threads, 1 I/O threads
+[17:22:09] [Server thread/INFO]: Default game type: SURVIVAL
+[17:22:09] [Server thread/INFO]: Generating keypair
+[17:22:09] [Server thread/INFO]: Starting Minecraft server on *:25565
+[17:22:09] [Server thread/INFO]: Paper: Using libdeflate (Linux x86_64) compression from Velocity.
+[17:22:09] [Server thread/INFO]: Paper: Using OpenSSL 3.x.x (Linux x86_64) cipher from Velocity.
+[17:22:09] [Server thread/INFO]: [PlaceholderAPI] Loading server plugin PlaceholderAPI v2.12.2
+[17:22:10] [Server thread/INFO]: [ObscureNicks] Loading server plugin ObscureNicks v1.0.0
+[17:22:10] [Server thread/INFO]: Server permissions file permissions.yml is empty, ignoring it
+[17:22:10] [Server thread/INFO]: Preparing level "world"
+[17:22:10] [Server thread/INFO]: [ca.spottedleaf.moonrise.common.util.MoonriseConstants] NUMA enable flag is not set; however there is NUMA interaction support for this OS.
+[17:22:10] [Server thread/INFO]: [ca.spottedleaf.moonrise.common.util.MoonriseConstants] Detected 1 NUMA nodes.
+[17:22:10] [Server thread/INFO]: Loading 0 persistent chunks for world 'minecraft:overworld'...
+[17:22:10] [Server thread/INFO]: Preparing spawn area: 100%
+[17:22:10] [Server thread/INFO]: Prepared spawn area in 2 ms
+[17:22:10] [Server thread/INFO]: Loading 0 persistent chunks for world 'minecraft:the_nether'...
+[17:22:10] [Server thread/INFO]: Prepared spawn area in 1 ms
+[17:22:10] [Server thread/INFO]: Loading 0 persistent chunks for world 'minecraft:the_end'...
+[17:22:10] [Server thread/INFO]: Prepared spawn area in 1 ms
+[17:22:10] [Server thread/INFO]: Done preparing level "world" (0.518s)
+[17:22:10] [Server thread/INFO]: [PlaceholderAPI] Enabling PlaceholderAPI v2.12.2
+[17:22:11] [Server thread/INFO]: [PlaceholderAPI] Fetching available expansion information...
+[17:22:11] [Server thread/INFO]: [ObscureNicks] Enabling ObscureNicks v1.0.0
+[17:22:11] [Server thread/INFO]: [PlaceholderAPI] Successfully registered internal expansion: lanick [1.0.0]
+[17:22:11] [Server thread/INFO]: [ObscureNicks] Successfully hooked into PlaceholderAPI with %lanick_name%!
+[17:22:11] [Server thread/INFO]: [spark] Starting background profiler...
+[17:22:11] [Server thread/INFO]: [PlaceholderAPI] Placeholder expansion registration initializing...
+[17:22:11] [Server thread/INFO]: 0 placeholder hook(s) registered!
+[17:22:11] [Server thread/INFO]: Running delayed init tasks
+[17:22:11] [Server thread/INFO]: Done (12.713s)! For help, type "help"
+[17:22:12] [Paper Async Task Handler Thread - 1/WARN]: *************************************************************************************
+[17:22:12] [Paper Async Task Handler Thread - 1/WARN]: You are running the latest build for your Minecraft version (1.21.11)
+[17:22:12] [Paper Async Task Handler Thread - 1/WARN]: However, you are 2 release(s) behind the latest stable release (26.1.2)!
+[17:22:12] [Paper Async Task Handler Thread - 1/WARN]: It is recommended that you update as soon as possible
+[17:22:12] [Paper Async Task Handler Thread - 1/WARN]: https://papermc.io/downloads/paper
+[17:22:12] [Paper Async Task Handler Thread - 1/WARN]: *************************************************************************************
+[17:23:41] [User Authenticator #0/INFO]: UUID of player FemboyVastly is 6d1d3b13-f09c-4989-bf65-8500bf7a7f2e
+[17:23:42] [Server thread/INFO]: FemboyVastly joined the game
+[17:23:42] [Server thread/INFO]: FemboyVastly[/127.0.0.1:45616] logged in with entity id 63 at ([world]34.97083159820417, 71.0, 28.487351988806385)
+[17:23:49] [Server thread/INFO]: FemboyVastly issued server command: /nick FemboyVastly
+[17:23:57] [Server thread/INFO]: FemboyVastly issued server command: /nick zxqld
+[17:24:10] [Netty Epoll IO #1/WARN]: Failed to update secure chat state for FemboyVastly: 'Chat disabled due to missing profile public key. Please try reconnecting.'
+[17:24:12] [Async Chat Thread - #1/INFO]: <zxqld> L
+[17:24:16] [Server thread/INFO]: FemboyVastly lost connection: Disconnected
+[17:24:16] [Server thread/INFO]: FemboyVastly left the game
+[17:24:20] [Server thread/INFO]: Stopping server
+[17:24:20] [Server thread/INFO]: [ObscureNicks] Disabling ObscureNicks v1.0.0
+[17:24:20] [Server thread/INFO]: [PlaceholderAPI] Disabling PlaceholderAPI v2.12.2
+[17:24:20] [Server thread/INFO]: Saving players
+[17:24:20] [Server thread/INFO]: Saving worlds
+[17:24:20] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld
+[17:24:20] [Server thread/INFO]: [ChunkHolderManager] Waiting 60s for chunk system to halt for world 'world'
+[17:24:20] [Server thread/INFO]: [ChunkHolderManager] Halted chunk system for world 'world'
+[17:24:20] [Server thread/INFO]: [ChunkHolderManager] Saving all chunkholders for world 'world'
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Saved 1006 block chunks, 676 entity chunks, 0 poi chunks in world 'world' in 1.37s
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Waiting 60s for chunk I/O to halt for world 'world'
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Halted I/O scheduler for world 'world'
+[17:24:21] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world_nether]'/minecraft:the_nether
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Waiting 60s for chunk system to halt for world 'world_nether'
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Halted chunk system for world 'world_nether'
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Saving all chunkholders for world 'world_nether'
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Saved 0 block chunks, 0 entity chunks, 0 poi chunks in world 'world_nether' in 0.00s
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Waiting 60s for chunk I/O to halt for world 'world_nether'
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Halted I/O scheduler for world 'world_nether'
+[17:24:21] [Server thread/INFO]: Saving chunks for level 'ServerLevel[world_the_end]'/minecraft:the_end
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Waiting 60s for chunk system to halt for world 'world_the_end'
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Halted chunk system for world 'world_the_end'
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Saving all chunkholders for world 'world_the_end'
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Saved 0 block chunks, 0 entity chunks, 0 poi chunks in world 'world_the_end' in 0.00s
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Waiting 60s for chunk I/O to halt for world 'world_the_end'
+[17:24:21] [Server thread/INFO]: [ChunkHolderManager] Halted I/O scheduler for world 'world_the_end'
+[17:24:21] [Server thread/INFO]: ThreadedAnvilChunkStorage (world): All chunks are saved
+[17:24:21] [Server thread/INFO]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[17:24:21] [Server thread/INFO]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[17:24:21] [Server thread/INFO]: ThreadedAnvilChunkStorage: All dimensions are saved
+[17:24:21] [Server thread/INFO]: Waiting for all RegionFile I/O tasks to complete...
+[17:24:21] [Server thread/INFO]: All RegionFile I/O tasks to complete
+[17:24:21] [Server thread/INFO]: [MoonriseCommon] Awaiting termination of worker pool for up to 60s...
+[17:24:21] [Server thread/INFO]: [MoonriseCommon] Awaiting termination of I/O pool for up to 60s...

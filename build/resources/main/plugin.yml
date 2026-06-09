@@ -1,0 +1,14 @@
+name: ObscureNicks
+version: 1.0.0
+main: obscure.main.ObscureNicks # Change to your actual package
+api-version: '1.21.11'
+author: Developer
+description: A premium nickname and skin synchronization plugin.
+depend:
+  - PlaceholderAPI
+commands:
+  nick:
+    aliases: [changenick]
+    description: Change your ingame nickname and skin.
+    permission: obscurenicks.use
+    usage: /<command> [nickname/off]

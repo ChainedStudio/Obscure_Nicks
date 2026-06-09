@@ -1,0 +1,22 @@
+{
+  "stats": {
+    "minecraft:picked_up": {
+      "minecraft:stick": 3,
+      "minecraft:oak_sapling": 2
+    },
+    "minecraft:custom": {
+      "minecraft:sprint_one_cm": 8785,
+      "minecraft:time_since_rest": 12883,
+      "minecraft:walk_one_cm": 24257,
+      "minecraft:total_world_time": 12883,
+      "minecraft:leave_game": 7,
+      "minecraft:fly_one_cm": 7216,
+      "minecraft:crouch_one_cm": 26,
+      "minecraft:sneak_time": 3,
+      "minecraft:play_time": 12883,
+      "minecraft:jump": 84,
+      "minecraft:time_since_death": 12883
+    }
+  },
+  "DataVersion": 4671
+}

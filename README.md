@@ -32,3 +32,32 @@ To elevate the utility of **ObscureNicks** from a pure utility plugin to a full-
 ### 3. Smart Moderation & Filter Checkpoints
 * **Objective:** Protect the server's chat environment from abusive usage.
 * **Details:** Build a customization system featuring blacklisted strings, regex validations, character length clamps, and unique alphanumeric checks to prevent players from mimicking server staff or selecting offensive names.
+
+====================================================================
+  La Nick Plugin - Testing & Integration Guide (NEZNAMY TAB Sorting)
+====================================================================
+
+To verify the fake rank sorting functionality requested in the specification sheet, 
+please follow these configuration steps in your NEZNAMY TAB plugin directory:
+
+1. Open 'plugins/TAB/config.yml'.
+2. Locate the 'sorting-types:' section.
+3. Add our high-to-low custom placeholder weight to the top of the list:
+
+sorting-types:
+  - "PLACEHOLDER_HIGH_TO_LOW:%lanick_weight%"
+  - "CASEINSENSITIVEA-Z:%player_name%"
+
+4. In our 'ObscureNicks/config.yml', ensure you have matched your LuckPerms 
+   group names with corresponding numeric weights under 'sorting-weights:'.
+   
+   Example:
+   sorting-weights:
+     owner: 100
+     mvp: 50
+     default: 1
+
+How it works during review:
+When a real 'Owner' runs `/fakerank mvp`, their %lanick_weight% drops from 
+100 down to 50. TAB automatically catches this change via PlaceholderAPI and re-sorts 
+them downward into the MVP bracket instantly on the tablist!

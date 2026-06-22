@@ -45,12 +45,13 @@ public class DatabaseManager {
     }
 
     private void createTables() {
+        // Inside your DatabaseManager's createTables() or connection block, ensure this is the exact column layout:
         String sql = "CREATE TABLE IF NOT EXISTS player_data (" +
-                "uuid TEXT PRIMARY KEY, " +
-                "nickname TEXT, " +
+                "uuid VARCHAR(36) PRIMARY KEY, " +
+                "nickname VARCHAR(16), " +
                 "skin_value TEXT, " +
                 "skin_signature TEXT, " +
-                "rank TEXT" +
+                "rank VARCHAR(64)" +
                 ");";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.execute();

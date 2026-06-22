@@ -1,0 +1,54 @@
+# ==========================================
+#         ObscureNicks Configuration
+# ==========================================
+
+database:
+  # Storing details across multi-server setups (Bungee/Velocity networks)
+  # If false, falls back onto localized SQLite files
+  mysql:
+    enabled: false
+    host: "localhost"
+    port: 3306
+    database: "network_nicks"
+    username: "root"
+    password: ""
+
+skin-refresh:
+  delay-ticks: 2
+  remount-vehicles: true
+
+defaults:
+  rank: "default"
+  # Toggle if matching Mojang skins apply instantly upon performing /nick <name>
+  change-skin-with-name: true
+
+# Weights used for NEZNAMY TAB list sorting from high (Staff) to low (Members)
+# Configure TAB sorting-types to use: - "PLACEHOLDER_HIGH_TO_LOW:%lanick_weight%"
+sorting-weights:
+  owner: 100
+  admin: 90
+  mod: 80
+  mvp: 50
+  vip: 30
+  default: 1
+
+# Quick-pool references for the /random module identity generator
+random-pool:
+  - "Notch"
+  - "Jeb_"
+  - "Grian"
+
+audio:
+  enabled: true
+  success:
+    sound: "ENTITY_PLAYER_LEVELUP"
+    volume: 1.0
+    pitch: 1.2
+  disable:
+    sound: "ENTITY_PLAYER_LEVELUP"
+    volume: 1.0
+    pitch: 0.8
+  randomize:
+    sound: "ENTITY_PLAYER_LEVELUP"
+    volume: 1.0
+    pitch: 1.1

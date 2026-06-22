@@ -7,15 +7,14 @@ import obscure.database.DatabaseManager.PlayerData;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -23,146 +22,264 @@ public class NicknameManager {
 
     private final ObscureNicks plugin;
     private final Map<UUID, String> activeNicknames = new HashMap<>();
+    private final Map<UUID, String> activeSkinValues = new HashMap<>();
+    private final Map<UUID, String> activeSkinSignatures = new HashMap<>();
+    private final Map<UUID, String> activeRanks = new HashMap<>();
+    private final Map<UUID, Boolean> nickEnabled = new HashMap<>();
 
     public NicknameManager(ObscureNicks plugin) {
         this.plugin = plugin;
     }
 
     public String getNickname(UUID uuid) {
+        if (!nickEnabled.getOrDefault(uuid, false)) return null;
         return activeNicknames.get(uuid);
+    }
+
+    public String getStoredNickname(UUID uuid) {
+        return activeNicknames.get(uuid);
+    }
+
+    public String getStoredSkinValue(UUID uuid) {
+        return activeSkinValues.get(uuid);
+    }
+
+    public String getStoredRank(UUID uuid) {
+        return activeRanks.get(uuid);
+    }
+
+    public boolean isNickEnabled(UUID uuid) {
+        return nickEnabled.getOrDefault(uuid, false);
     }
 
     public void loadPlayer(Player player) {
         UUID uuid = player.getUniqueId();
-
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             PlayerData data = plugin.getDatabaseManager().loadPlayerData(uuid);
-            if (data == null || data.getNickname() == null || data.getNickname().isEmpty()) return;
+            if (data == null || data.getNickname() == null || data.getNickname().isEmpty()) {
+                return;
+            }
 
             activeNicknames.put(uuid, data.getNickname());
+            activeSkinValues.put(uuid, data.getSkinValue());
+            activeSkinSignatures.put(uuid, data.getSkinSignature());
+            activeRanks.put(uuid, data.getRank());
 
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                player.displayName(Component.text(data.getNickname()));
-                player.playerListName(Component.text(data.getNickname()));
+            // To ensure network cross-server synchronization remains unified,
+            // we default to enabling the state if data exists from a prior server session.
+            nickEnabled.put(uuid, true);
 
-                if (data.getSkinValue() != null && !data.getSkinValue().isEmpty()) {
-                    PlayerProfile profile = player.getPlayerProfile();
-                    profile.removeProperties(profile.getProperties());
-                    profile.setProperty(new ProfileProperty("textures", data.getSkinValue(), data.getSkinSignature()));
-                    player.setPlayerProfile(profile);
-                    refreshPlayerSkin(player);
-                }
-            });
+            Bukkit.getScheduler().runTask(plugin, () -> applyNickState(player));
         });
     }
 
     public void unloadPlayer(UUID uuid) {
         activeNicknames.remove(uuid);
+        activeSkinValues.remove(uuid);
+        activeSkinSignatures.remove(uuid);
+        activeRanks.remove(uuid);
+        nickEnabled.remove(uuid);
     }
 
-    /**
-     * Resets a player back to their real name and original skin profiles.
-     */
-    public void resetNickname(Player player) {
+    public void toggleNick(Player player) {
         UUID uuid = player.getUniqueId();
-        activeNicknames.remove(uuid);
+        String nick = activeNicknames.get(uuid);
+        if (nick == null || nick.isEmpty()) {
+            player.sendMessage(plugin.getMessage("errors.no-profile"));
+            return;
+        }
+
+        boolean nextState = !nickEnabled.getOrDefault(uuid, false);
+        nickEnabled.put(uuid, nextState);
+
+        if (nextState) {
+            applyNickState(player);
+            player.sendMessage(plugin.getMessage("success.nick-enabled"));
+            playSoundEffect("audio.success", player);
+        } else {
+            removeNickState(player);
+            player.sendMessage(plugin.getMessage("success.nick-disabled"));
+            playSoundEffect("audio.disable", player);
+        }
+    }
+
+    public void setNickAndSkin(Player player, String nickname) {
+        UUID uuid = player.getUniqueId();
+        boolean changeSkinConfig = plugin.getConfig().getBoolean("defaults.change-skin-with-name", true);
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            plugin.getDatabaseManager().savePlayerData(uuid, "", "", "", "default_rank");
+            String textureValue = activeSkinValues.getOrDefault(uuid, "");
+            String textureSignature = activeSkinSignatures.getOrDefault(uuid, "");
+
+            if (changeSkinConfig) {
+                String[] skinData = fetchSkinFromMojang(nickname);
+                if (skinData != null) {
+                    textureValue = skinData[0];
+                    textureSignature = skinData[1];
+                } else {
+                    player.sendMessage(plugin.getMessage("errors.skin-fetch-failed").replace("%target%", nickname));
+                }
+            }
+
+            String defaultRank = plugin.getConfig().getString("defaults.rank", "default");
+            String currentRank = activeRanks.getOrDefault(uuid, defaultRank);
+
+            activeNicknames.put(uuid, nickname);
+            activeSkinValues.put(uuid, textureValue);
+            activeSkinSignatures.put(uuid, textureSignature);
+            nickEnabled.put(uuid, true);
+
+            plugin.getDatabaseManager().savePlayerData(uuid, nickname, textureValue, textureSignature, currentRank);
 
             Bukkit.getScheduler().runTask(plugin, () -> {
-                player.displayName(Component.text(player.getName()));
-                player.playerListName(Component.text(player.getName()));
-
-                // Revert to pristine default Mojang settings
-                PlayerProfile profile = player.getPlayerProfile();
-                profile.removeProperties(profile.getProperties());
-                player.setPlayerProfile(profile);
-
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 0.8f);
-                refreshPlayerSkin(player);
-
-                player.sendMessage("§aYour nickname and skin have been reset back to default!");
+                applyNickState(player);
+                playSoundEffect("audio.success", player);
+                player.sendMessage(plugin.getMessage("success.nick-and-skin-set").replace("%name%", nickname));
             });
         });
     }
 
-    public void setNicknameAndSkin(Player player, String nickname) {
+    public void setNicknameInState(Player player, String nickname) {
         UUID uuid = player.getUniqueId();
+        if (!nickEnabled.getOrDefault(uuid, false)) {
+            player.sendMessage(plugin.getMessage("errors.no-profile"));
+            return;
+        }
+
+        activeNicknames.put(uuid, nickname);
+        plugin.getDatabaseManager().savePlayerData(uuid, nickname, activeSkinValues.getOrDefault(uuid, ""), activeSkinSignatures.getOrDefault(uuid, ""), activeRanks.getOrDefault(uuid, "default"));
+
+        player.displayName(Component.text(nickname));
+        player.playerListName(Component.text(nickname));
+        refreshPlayerSkin(player);
+        player.sendMessage(plugin.getMessage("success.nickname-changed").replace("%name%", nickname));
+    }
+
+    public void setSkinInState(Player player, String skinTargetName) {
+        UUID uuid = player.getUniqueId();
+        if (!nickEnabled.getOrDefault(uuid, false)) {
+            player.sendMessage(plugin.getMessage("errors.no-profile"));
+            return;
+        }
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            String[] skinData = fetchSkinFromMojang(nickname);
-
+            String[] skinData = fetchSkinFromMojang(skinTargetName);
             if (skinData == null) {
-                player.sendMessage("§cCould not find a valid Minecraft skin for '" + nickname + "'. Keeping your current skin!");
-                plugin.getDatabaseManager().savePlayerData(uuid, nickname, "", "", "default_rank");
-                activeNicknames.put(uuid, nickname);
-
-                Bukkit.getScheduler().runTask(plugin, () -> {
-                    player.displayName(Component.text(nickname));
-                    player.playerListName(Component.text(nickname));
-                    player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-                });
+                player.sendMessage(plugin.getMessage("errors.skin-fetch-failed").replace("%target%", skinTargetName));
                 return;
             }
 
-            String textureValue = skinData[0];
-            String textureSignature = skinData[1];
-
-            plugin.getDatabaseManager().savePlayerData(uuid, nickname, textureValue, textureSignature, "default_rank");
-            activeNicknames.put(uuid, nickname);
+            activeSkinValues.put(uuid, skinData[0]);
+            activeSkinSignatures.put(uuid, skinData[1]);
+            plugin.getDatabaseManager().savePlayerData(uuid, activeNicknames.getOrDefault(uuid, player.getName()), skinData[0], skinData[1], activeRanks.getOrDefault(uuid, "default"));
 
             Bukkit.getScheduler().runTask(plugin, () -> {
-                player.displayName(Component.text(nickname));
-                player.playerListName(Component.text(nickname));
-
-                PlayerProfile profile = player.getPlayerProfile();
-                profile.removeProperties(profile.getProperties());
-                profile.setProperty(new ProfileProperty("textures", textureValue, textureSignature));
-                player.setPlayerProfile(profile);
-
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.2f);
-
-                // Force the network update logic
-                refreshPlayerSkin(player);
-
-                player.sendMessage("§aYour nickname has been changed to §e" + nickname + " §aand your skin has updated!");
+                applyNickState(player);
+                player.sendMessage(plugin.getMessage("success.skin-changed").replace("%name%", skinTargetName));
             });
         });
     }
 
-    /**
-     * Bulletproof method forcing vanilla game client engines to clear cached skin properties.
-     */
+    public void setFakeRankInState(Player player, String rank) {
+        UUID uuid = player.getUniqueId();
+        activeRanks.put(uuid, rank);
+        plugin.getDatabaseManager().savePlayerData(uuid, activeNicknames.getOrDefault(uuid, player.getName()), activeSkinValues.getOrDefault(uuid, ""), activeSkinSignatures.getOrDefault(uuid, ""), rank);
+        player.sendMessage(plugin.getMessage("success.rank-changed").replace("%rank%", rank));
+    }
+
+    public void setRandomIdentity(Player player) {
+        UUID uuid = player.getUniqueId();
+        List<String> pool = plugin.getConfig().getStringList("random-pool");
+        if (pool.isEmpty()) {
+            pool = Arrays.asList("Notch", "Jeb_", "Grian");
+        }
+        String randomName = pool.get(new Random().nextInt(pool.size()));
+
+        player.sendMessage(plugin.getMessage("success.randomizing").replace("%name%", randomName));
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            String[] skinData = fetchSkinFromMojang(randomName);
+            String textureValue = (skinData != null) ? skinData[0] : "";
+            String textureSignature = (skinData != null) ? skinData[1] : "";
+            String defaultRank = plugin.getConfig().getString("defaults.rank", "default");
+
+            activeNicknames.put(uuid, randomName);
+            activeSkinValues.put(uuid, textureValue);
+            activeSkinSignatures.put(uuid, textureSignature);
+            nickEnabled.put(uuid, true);
+
+            plugin.getDatabaseManager().savePlayerData(uuid, randomName, textureValue, textureSignature, activeRanks.getOrDefault(uuid, defaultRank));
+
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                applyNickState(player);
+                playSoundEffect("audio.randomize", player);
+                player.sendMessage(plugin.getMessage("success.randomized").replace("%name%", randomName));
+            });
+        });
+    }
+
+    private void applyNickState(Player player) {
+        UUID uuid = player.getUniqueId();
+        String nick = activeNicknames.get(uuid);
+        String skinVal = activeSkinValues.get(uuid);
+        String skinSig = activeSkinSignatures.get(uuid);
+
+        if (nick != null && !nick.isEmpty()) {
+            player.displayName(Component.text(nick));
+            player.playerListName(Component.text(nick));
+        }
+        if (skinVal != null && !skinVal.isEmpty()) {
+            PlayerProfile profile = player.getPlayerProfile();
+            profile.removeProperties(profile.getProperties());
+            profile.setProperty(new ProfileProperty("textures", skinVal, skinSig));
+            player.setPlayerProfile(profile);
+        }
+        refreshPlayerSkin(player);
+    }
+
+    private void removeNickState(Player player) {
+        player.displayName(Component.text(player.getName()));
+        player.playerListName(Component.text(player.getName()));
+
+        PlayerProfile profile = player.getPlayerProfile();
+        profile.removeProperties(profile.getProperties());
+        player.setPlayerProfile(profile);
+        refreshPlayerSkin(player);
+    }
+
     private void refreshPlayerSkin(Player player) {
         if (!player.isOnline()) return;
 
-        // 1. Un-track player from all online clients
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (!onlinePlayer.equals(player)) {
                 onlinePlayer.hidePlayer(plugin, player);
             }
         }
 
-        // 2. Schedule a 2-tick network buffer to cleanly update metadata profile layouts
+        long ticks = plugin.getConfig().getLong("skin-refresh.delay-ticks", 2L);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            // Re-track player for everyone else
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                 if (!onlinePlayer.equals(player)) {
                     onlinePlayer.showPlayer(plugin, player);
                 }
             }
-
-            // 3. Force update the local viewing client perspective without kicking them
-            var loc = player.getLocation();
-            var vehicle = player.getVehicle();
-            if (vehicle != null) {
+            Entity vehicle = player.getVehicle();
+            if (vehicle != null && plugin.getConfig().getBoolean("skin-refresh.remount-vehicles", true)) {
                 vehicle.removePassenger(player);
+                plugin.getServer().getScheduler().runTaskLater(plugin, () -> vehicle.addPassenger(player), 1L);
             }
+            player.teleportAsync(player.getLocation());
+        }, ticks);
+    }
 
-            // Re-spawns player chunks internally to force local avatar reload
-            player.teleportAsync(loc);
-        }, 2L);
+    private void playSoundEffect(String configPath, Player player) {
+        if (!plugin.getConfig().getBoolean("audio.enabled", true)) return;
+        try {
+            Sound sound = Sound.valueOf(plugin.getConfig().getString(configPath + ".sound"));
+            float volume = (float) plugin.getConfig().getDouble(configPath + ".volume", 1.0);
+            float pitch = (float) plugin.getConfig().getDouble(configPath + ".pitch", 1.0);
+            player.playSound(player.getLocation(), sound, volume, pitch);
+        } catch (Exception ignored) {}
     }
 
     private String[] fetchSkinFromMojang(String name) {

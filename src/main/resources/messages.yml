@@ -1,0 +1,37 @@
+# ==========================================
+#          ObscureNicks Messages
+# ==========================================
+
+prefix: "&8[&bObscureNicks&8] "
+
+boolean-values:
+  yes: "&aYes"
+  no: "&cNo"
+
+errors:
+  only-players: "&cOnly players can change their identity layouts!"
+  no-profile: "&cYou don't have a nickname profile configured yet! Use /nick <name> first."
+  no-permission: "&cYou do not have permission to execute this command."
+  usage-nick: "&cUsage: /nick <name>"
+  usage-nickname: "&cUsage: /nickname <name>"
+  usage-skin: "&cUsage: /nickskin <player_name>"
+  usage-rank: "&cUsage: /<command> <rank>"
+  skin-fetch-failed: "&cCould not retrieve valid skin for '%target%'. Target layout unchanged."
+
+success:
+  nick-enabled: "&aYour profile nickname state has been &eENABLED&a!"
+  nick-disabled: "&cYour profile nickname state has been &dDISABLED&c!"
+  nick-and-skin-set: "&aYour skin & username are set to &e%name%&a and nick is turned ON!"
+  nickname-changed: "&aChanged your in-state nickname to: &e%name%"
+  skin-changed: "&aChanged your in-state skin layout to profile: &e%name%"
+  rank-changed: "&aChanged your fake rank configuration to: &e%rank%"
+  randomizing: "&aFetching random skin and profile profiles... Selected: &e%name%"
+  randomized: "&aSuccessfully randomized identity profile to &e%name%&a!"
+
+status-summary:
+  header: "&e==== Your Nick Status Summary ===="
+  state: "&7State: %state%"
+  nickname: "&7Current Nickname: &b%name%"
+  skin: "&7Custom Skin Status: &b%skin%"
+  rank: "&7Fake Rank Field: &b%rank%"
+  footer: "&e=================================="

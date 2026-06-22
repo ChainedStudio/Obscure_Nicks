@@ -1,14 +1,35 @@
 name: ObscureNicks
-version: 1.0.0
-main: obscure.main.ObscureNicks # Change to your actual package
-api-version: '1.21.11'
+version: 1.1.0
+main: obscure.main.ObscureNicks
+api-version: '1.21'
 author: Developer
-description: A premium nickname and skin synchronization plugin.
+description: Premium nickname identity and skin synchronization plugin.
 depend:
   - PlaceholderAPI
+softdepend:
+  - LuckPerms
 commands:
   nick:
     aliases: [changenick]
-    description: Change your ingame nickname and skin.
-    permission: obscurenicks.use
-    usage: /<command> [nickname/off]
+    description: Change your ingame nickname and skin layouts.
+    permission: lanick.command.nick
+  togglenick:
+    aliases: [nicktoggle]
+    description: Toggle your identity states.
+    permission: lanick.command.toggle
+  random:
+    description: Select random developer skin maps.
+    permission: lanick.command.random
+  nicked:
+    description: Check current profile states.
+    permission: lanick.command.nicked
+  nickname:
+    description: Set localized nick layouts.
+    permission: lanick.command.nickname
+  nickskin:
+    description: Modify skin in-state layout.
+    permission: lanick.command.skin
+  fakerank:
+    aliases: [nickrank]
+    description: Adjust sorting metadata rankings.
+    permission: lanick.command.rank
